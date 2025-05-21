@@ -1,30 +1,18 @@
-from sympy import symbols, exp, diff, Eq, solve
-import numpy as np
-from scipy.integrate import quad
+import sympy as sp
 
 # Define symbolic variables
-x1, x2, x3 = symbols('x1 x2 x3')
+x1, x2, x3 = sp.symbols('x1 x2 x3', real=True)
+
 
 # Define the function
-f = exp(x1 - 3*x2 + 3) + exp(3*x2 - 2*x3 - 2) + exp(2*x3 - x1 + 2)
+f = sp.exp(x1-3*x2+3) + sp.exp(3*x2-2*x3-2) + sp.exp(2*x3-x1+2)
 
 def argmin_xi(x):
-    if x == x1:     
-        f_x1 = f.subs({x2: 3, x3: 2})
-        df_dx1 = diff(f_x1, x1)
-        sol_x1 = solve(Eq(df_dx1, 0), x1)
-        return [s.evalf() for s in sol_x1]
-    elif x == x2:
-        f_x2 = f.subs({x1: 4, x3: 2})
-        df_dx2 = diff(f_x2, x2)
-        sol_x2 = solve(Eq(df_dx2, 0), x2)
-        return [s.evalf() for s in sol_x2]
-    elif x == x3:
-        f_x3 = f.subs({x1: 4, x2: 3})
-        df_dx3 = diff(f_x3, x3)
-        sol_x3 = solve(Eq(df_dx3, 0), x3)
-        return [s.evalf() for s in sol_x3]
+    df = sp.diff(f, x)
+    argmin = sp.solve(sp.Eq(df, 0), x)[0]
+    return argmin
 
-print("argmin x1:", argmin_xi(x1))
-print("argmin x2:", argmin_xi(x2))
-print("argmin x3:", argmin_xi(x3))
+x0 = {x1: 4, x2: 3, x3: 2}
+print("argmin x1:", float(argmin_xi(x1).subs(x0)))
+print("argmin x2:", float(argmin_xi(x2).subs(x0)))
+print("argmin x3:", float(argmin_xi(x3).subs(x0)))
